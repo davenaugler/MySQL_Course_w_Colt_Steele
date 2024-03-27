@@ -73,7 +73,9 @@ SELECT * FROM books WHERE pages = (SELECT MAX(pages) FROM books);
 SELECT books.title, books.pages FROM books WHERE pages = (SELECT MAX(pages) FROM books);
 
 INSERT INTO books (title, author_fname, author_lname, released_year, stock_quantity, pages)
-VALUES ('My Life in Words', 'Dave', 'Naugler', 2024, 65, 634);
+VALUES ('My Life in Words', 'Dave', 'Naugler', 2024, 65, 629);
+
+SELECT * FROM books;
 
 SELECT book_id, books.title, books.pages FROM books WHERE pages = (SELECT MAX(pages) FROM books);
 

@@ -32,6 +32,9 @@ SELECT DISTINCT books.author_fname, books.author_lname FROM books;
 INSERT INTO books (title, author_fname, author_lname)
 VALUE ('My Life', 'Dave', 'Naugler');
 
+INSERT INTO books (title, author_fname, author_lname, released_year, stock_quantity, pages)
+VALUES ('My Dev Life', 'Dave', 'Naugler', 2024, 50, 634);
+
 SELECT * FROM books;
 
 SELECT books.book_id, books.title, books.author_lname FROM books;
