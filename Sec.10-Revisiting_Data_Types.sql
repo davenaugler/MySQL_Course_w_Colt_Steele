@@ -120,7 +120,6 @@ SELECT * FROM numbers;
 INSERT INTO numbers (x,y) VALUES (1.12345678, 1.12345678);
 SELECT * FROM numbers;
 
-
 INSERT INTO numbers (x,y) VALUES (3.12345678, 3.12345678901234567);
 SELECT * FROM numbers;
 
@@ -133,7 +132,6 @@ SHOW TABLES;
 
 CREATE TABLE people (name VARCHAR(100), birth_date DATE, birth_time TIME, birth_date_time DATETIME);
 DESC people;
-
 
 INSERT INTO people (name, birth_date, birth_time, birth_date_time)
 VALUES ('Elton', '2000-12-25', '11:00:00', '2000-12-25 11:00:00');
@@ -238,20 +236,73 @@ VALUES ('Beautiful SUNSET tonight!');
 
 SELECT * FROM captions;
 
+-- ------------------
+-- ADDED ON LAPTOP --
+-- ------------------
+CREATE TABLE captions2 (text VARCHAR(140), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
+DESC captions2;
 
+INSERT INTO captions2 (text) VALUE ('Lovin life');
 
+SELECT * FROM captions2;
+UPDATE captions2 SET text='I love life!!!!';
 
+SELECT * FROM captions2;
+UPDATE captions2 SET text='I love LIFE!!!!';
+CREATE TABLE captions2 (text VARCHAR(140), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
+UPDATE captions2 SET text='I love LIFE!!!!';
+SELECT * FROM captions2;
 
+-- Challenge Exercises
+-- #1 What's a good use case for CHAR?
+--   A good use chase for CHAR is when you know exactly how many letters you'll need
+--   For example the abbreviated states initials. You'd use this over VARCHAR because CHAR is only 4 bytes
+--     and VARCHAR is 8 bytes. It's worth saving the memory if you know that you don't need variable character lengths.
 
+-- #2 Fill in the blanks
+CREATE TABLE inventory (item_name VARCHAR(100), price DECIMAL(8,2), quantity INT);
 
+-- #3 What's the difference between DATETIME and TIMESTAMP
+--   What I remember is DATETIME covers a much larger amount of time than TIMESTAMP
 
+-- #4 Print out the current Date (but not time)
+SELECT CURTIME();
 
+-- #5 Print out the current Date (but not time)
+SELECT CURDATE();
 
+-- #6 Print out the current day of the week (the number)
+SELECT DATE_FORMAT(CURDATE(),'%e'); -- I misunderstood the questions
+SELECT DAYOFWEEK(CURDATE()); -- Get the day of the week as in the number between 1-7
+# SELECT birth_date, DATE_FORMAT(birth_date,'%M, %D %Y') AS birthdate FROM people;
 
+-- #7 Print out the current day of the week (the day name)
+SELECT DATE_FORMAT(CURDATE(), '%W');
+SELECT DAYNAME(CURDATE());
+SELECT DAYNAME(NOW());
 
+-- #8 Print out the current day and time using this format
+--   mm/dd/yyyy
+SELECT DATE_FORMAT(CURDATE(), '%m/%d/%Y');
 
+-- #9 Print out the current day and time using this format
+--   January 2nd at 3:15 (example)
+SELECT NOW();
+SELECT DATE_FORMAT(NOW(), '%M %D at %h:%i%p');
 
+-- #10 Create a tweets table that stores:
+--    The tweet content
+--    A username
+--    Time it was created
+CREATE TABLE tweets (text VARCHAR(140), username VARCHAR(80), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+# CREATE TABLE captions2 (text VARCHAR(140), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
 
+DESC tweets;
+INSERT INTO tweets (text, username)
+VALUES ('My first tweet!', 'Dave'),
+       ('Did you see the game last night?!', 'Sarah');
+
+SELECT * FROM tweets;
 
 
 
