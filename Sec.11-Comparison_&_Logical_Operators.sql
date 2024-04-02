@@ -79,7 +79,6 @@ SELECT books.released_year FROM books WHERE released_year >= 2010 ORDER BY relea
 
 -- SELECT all books released before 1985 as well as including 1985
 SELECT books.released_year FROM books WHERE released_year <= 1985 ORDER BY released_year;
-s
 
 -- && (AND) OPERATOR (Comparison operator)
 -- ----------------------------------------
