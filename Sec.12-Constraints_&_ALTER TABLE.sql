@@ -192,3 +192,101 @@ SELECT * FROM houses;
 
 -- Alter Table
 -- --------------------
+-- Refer to: 15.1.9 ALTER TABLE Statement - https://dev.mysql.com/doc/refman/8.0/en/alter-table.html
+-- Using Alter table we can change tables.
+--   We can add columns, remove columns, rename columns, change data type of a column, add constraints,
+--      remove constraints, etc.
+
+-- When altering table data consider the data you may need to update
+ALTER TABLE companies
+ADD COLUMN phone VARCHAR(15);
+
+SELECT * FROM companies;
+
+-- When altering a table and assigning a NOT NULL to the data
+--   Number columns will have 0
+--   For String columns it will be an empty string.
+ALTER TABLE companies
+ADD COLUMN employee_count INT NOT NULL;
+
+SELECT * FROM companies;
+
+ALTER TABLE companies
+ALTER COLUMN employee_count SET DEFAULT 1;
+
+SELECT * FROM companies;
+
+DESC companies;
+
+INSERT INTO companies (name, address, phone)
+VALUE ('Car Inc.', '7845 W. Spruce Ln.', 3276458374);
+
+SELECT * FROM companies;
+
+INSERT INTO companies (name, address, phone, employee_count)
+VALUE ('Cat Inc.', '301 S. Lion Ln.', 3278374104, 14);
+
+SELECT * FROM companies;
+
+
+-- Alter Table: Drop Columns
+-- --------------------------
+-- Dropping companies phone number
+ALTER TABLE companies
+DROP COLUMN phone;
+
+DESC companies;
+
+SELECT * FROM companies;
+
+ALTER TABLE companies
+DROP COLUMN employee_count;
+
+DESC companies;
+
+SELECT * FROM companies;
+
+
+-- Alter Table: Renaming
+-- --------------------------
+-- Rename way #1
+RENAME TABLE companies TO suppliers;
+
+SHOW TABLES;
+
+SELECT * FROM suppliers;
+
+-- Rename way #2
+ALTER TABLE suppliers RENAME TO companies;
+
+SHOW TABLES;
+
+SELECT * FROM companies;
+
+ALTER TABLE companies
+RENAME COLUMN name TO company_name;
+
+SELECT * FROM companies;
+
+-- Alter Table: Modifying Columns
+-- -------------------------------
+DESC companies;
+
+ALTER TABLE companies
+MODIFY company_name VARCHAR(120);
+
+DESC companies;
+
+ALTER TABLE companies
+ALTER COLUMN company_name SET DEFAULT 'unknown';
+
+DESC companies;
+
+INSERT INTO companies (address)
+VALUE ('2334 Rose Lane');
+
+SELECT * FROM companies;
+
+-- A way to rename column names
+# ALTER TABLE suppliers
+# CHANGE name company_name VARCHAR(50);
