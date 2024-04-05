@@ -290,5 +290,3 @@ SELECT * FROM companies;
 -- A way to rename column names
 # ALTER TABLE suppliers
 # CHANGE name company_name VARCHAR(50);
-
--- Git Test
