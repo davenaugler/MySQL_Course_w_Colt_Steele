@@ -1,5 +1,3 @@
--- Section 13: One to Many & Joins
--- ---------------------------------
 
 USE customers;
 
