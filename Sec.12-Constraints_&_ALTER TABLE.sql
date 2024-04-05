@@ -288,5 +288,45 @@ VALUE ('2334 Rose Lane');
 SELECT * FROM companies;
 
 -- A way to rename column names
-# ALTER TABLE suppliers
-# CHANGE name company_name VARCHAR(50);
+-- ALTER TABLE suppliers
+-- CHANGE name company_name VARCHAR(50);
+
+
+-- ALTER TABLE: Constraints
+-- ---------------------------
+
+SELECT * FROM houses;
+
+ALTER TABLE houses ADD CONSTRAINT positive_purchase_price CHECK(purchase_price >= 0);
+
+DESC houses;
+
+-- Check constraint 'positive_purchase_price' is violated.
+--   This is a good thing
+INSERT INTO houses (purchase_price, sale_price)
+VALUE (-1, 4);
+
+ALTER TABLE houses DROP CONSTRAINT positive_purchase_price;
+
+INSERT INTO houses (purchase_price, sale_price)
+VALUE (-1, 4);
+
+SELECT * FROM houses;
+
+ALTER TABLE houses ADD CONSTRAINT positive_purchase_price CHECK(purchase_price >= 0);
+
+SELECT * FROM houses;
+
+UPDATE houses
+SET purchase_price = 1
+WHERE id = 3;
+
+SELECT * FROM houses;
+
+-- Check constraint 'salePrice_gt_purchasePrice' is violated.
+--   This is a good thing
+INSERT INTO houses (purchase_price, sale_price)
+VALUE (500000, 650000);
+
+SELECT * FROM houses;
+
