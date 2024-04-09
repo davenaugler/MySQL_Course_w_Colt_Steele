@@ -53,6 +53,7 @@ SELECT * FROM orders WHERE customer_id = (SELECT id FROM customers WHERE last_na
 SELECT * FROM customers, orders;
 
 -- INNER JOIN --> using Foreign Key in orders (customer_id) to join with customers id
+--    We only take the
 -- -----------------------
 
 SELECT * FROM orders;
@@ -135,4 +136,28 @@ ORDER BY total DESC;
 --    Boy     |  George   |  135.49
 
 -- LEFT JOIN
+    -- In LEFT JOIN we take all information from customers table regardless if there's data in there or not.
+    -- If there's not data then we get null
+    -- LEFT JOINS will tell us if there are any customers that haven't placed any orders
 -- ------------
+
+SELECT customers.first_name, customers.last_name, orders.order_date, orders.amount FROM customers
+LEFT JOIN orders ON orders.customer_id = customers.id;
+
+SELECT customers.first_name, customers.last_name, orders.order_date, orders.amount FROM customers
+LEFT JOIN orders ON orders.customer_id = customers.id;
+
+SELECT orders.order_date, orders.amount, customers.first_name, customers.last_name FROM orders
+LEFT JOIN customers ON orders.customer_id = customers.id;
+
+
+-- LEFT JOIN w/ GROUP BY
+SELECT customers.first_name, customers.last_name, orders.amount FROM customers
+LEFT JOIN orders ON customers.id = orders.customer_id;
+
+SELECT customers.first_name, customers.last_name, IFNULL(SUM(orders.amount), 0) AS money_spent FROM customers
+LEFT JOIN orders ON customers.id = orders.customer_id
+GROUP BY first_name, last_name;
+
+
+-- RIGHT JOINS
