@@ -161,3 +161,29 @@ GROUP BY first_name, last_name;
 
 
 -- RIGHT JOINS
+--  Inner Join
+SELECT customers.first_name, customers.last_name, orders.order_date, orders.amount FROM customers
+JOIN orders ON customers.id = orders.customer_id;
+
+ --  Right Join
+SELECT customers.first_name, customers.last_name, orders.order_date, orders.amount FROM customers
+RIGHT JOIN orders ON customers.id = orders.customer_id;
+
+SELECT * FROM orders;
+
+-- ERROR: Cannot add or update a child row: a foreign key constraint fails
+--   (`customers`.`orders`, CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`))
+INSERT INTO orders (amount, order_date, customer_id) VALUES (100, CURDATE(), 99);
+
+DESC orders;
+
+INSERT INTO orders (amount, order_date) VALUES (100, CURDATE());
+
+SELECT * FROM orders;
+
+-- In real world we'll need to be required to have customer_id
+
+-- RIGHT JOIN
+SELECT customers.first_name, customers.last_name, orders.order_date, orders.amount FROM customers
+RIGHT JOIN orders ON customers.id = orders.customer_id;
+
