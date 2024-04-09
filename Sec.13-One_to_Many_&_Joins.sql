@@ -152,6 +152,7 @@ LEFT JOIN customers ON orders.customer_id = customers.id;
 
 
 -- LEFT JOIN w/ GROUP BY
+-- ---------------------
 SELECT customers.first_name, customers.last_name, orders.amount FROM customers
 LEFT JOIN orders ON customers.id = orders.customer_id;
 
@@ -161,6 +162,7 @@ GROUP BY first_name, last_name;
 
 
 -- RIGHT JOINS
+-- ---------------
 --  Inner Join
 SELECT customers.first_name, customers.last_name, orders.order_date, orders.amount FROM customers
 JOIN orders ON customers.id = orders.customer_id;
@@ -186,4 +188,195 @@ SELECT * FROM orders;
 -- RIGHT JOIN
 SELECT customers.first_name, customers.last_name, orders.order_date, orders.amount FROM customers
 RIGHT JOIN orders ON customers.id = orders.customer_id;
+
+-- ON DELETE CASCADE
+    -- ...has a cascading affect on the corresponding rows in the child table
+    -- that references the parent row.
+        -- This allows all orders to be deleted when a customer is deleted as well.
+-- --------------------
+
+DROP TABLE orders;
+DROP TABLE customers;
+
+CREATE TABLE customers (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(80) NOT NULL,
+    last_name VARCHAR(80) NOT NULL,
+    email VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    order_date DATE NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    customer_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+
+INSERT INTO customers (first_name, last_name, email)
+VALUES ('Boy', 'George', 'george@gmail.com'),
+       ('George', 'Michael', 'gm@gmail.com'),
+       ('David', 'Bowie', 'david@gmail.com'),
+       ('Blue', 'Steele', 'blue@gmail.com'),
+       ('Bette', 'Davis', 'bette@aol.com');
+
+INSERT INTO orders (order_date, amount, customer_id)
+VALUES ('2016-02-10', 99.99, 1),
+       ('2017-11-11', 35.50, 1),
+       ('2014-12-12', 800.67, 2),
+       ('2015-01-03', 12.50, 2),
+       ('1999-04-11', 450.25, 5);
+
+
+SELECT * FROM customers;
+
+DELETE FROM customers WHERE last_name = 'George';
+
+SELECT * FROM customers;
+SELECT * FROM orders;
+
+-- CHALLENGE EXERCISE
+-- --------------------
+
+-- #1 Write this Schema
+-- Students: id, first_na,me
+-- Papers: title, grade, student_id (fk to students.id)
+
+CREATE TABLE students (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE papers (
+    title VARCHAR(120) NOT NULL,
+    grade TINYINT NOT NULL,
+    student_id INT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
+ALTER TABLE papers
+MODIFY COLUMN grade INT NOT NULL;
+
+INSERT INTO students (first_name) VALUES
+('Caleb'), ('Samantha'), ('Raj'), ('Carlos'), ('Lisa');
+
+INSERT INTO papers (student_id, title, grade ) VALUES
+(1, 'My First Book Report', 60),
+(1, 'My Second Book Report', 75),
+(2, 'Russian Lit Through The Ages', 94),
+(2, 'De Montaigne and The Art of The Essay', 98),
+(4, 'Borges and Magical Realism', 89);
+
+SELECT * FROM students;
+SELECT * FROM papers;
+
+-- #2: Print this
+   -- first_name | title | grade
+SELECT students.first_name, papers.title, papers.grade FROM students
+JOIN papers ON students.id = papers.student_id
+ORDER BY grade DESC;
+
+-- first_name | title                                     | grade
+-- ------------------------------------------------------------------
+--  Samantha  |   De Montaigne and The Art of The Essay   |  98
+--  Samantha  |   Russian Lit Through The Ages            |  94
+--  Carlos    |   Borges and Magical Realism              |  89
+--  Caleb     |   My Second Book Report                   |  75
+--  Caleb     |   My First Book Report                    |  60
+
+
+-- #3: Print this
+   -- first_name | title | grade but with the null values as well.
+SELECT students.first_name, papers.title, papers.grade FROM students
+LEFT JOIN papers ON students.id = papers.student_id;
+
+-- first_name | title                                     | grade
+-- ------------------------------------------------------------------
+--  Caleb     |  My First Book Report                     |  60
+--  Caleb     |  My Second Book Report                    |  75
+--  Samantha  |  Russian Lit Through The Ages             |  94
+--  Samantha  |  De Montaigne and The Art of The Essay    |  98
+--  Raj       |  NULL                                     |  NULL
+--  Carlos    |  Borges and Magical Realism               |  89
+--  Lisa      |  NULL                                     |  NULL
+
+-- #4: Print this
+   -- first_name | title | grade
+   -- Null title values are replaced with MISSING
+   -- Null grade is replaced with 0's
+SELECT students.first_name, IFNULL(papers.title, 'MISSING'), IFNULL(papers.grade, 0) FROM students
+LEFT JOIN papers ON students.id = papers.student_id;
+
+-- first_name | title                                     | grade
+-- ------------------------------------------------------------------
+--  Caleb     |   My First Book Report                    |  60
+--  Caleb     |   My Second Book Report                   |  75
+--  Samantha  |   Russian Lit Through The Ages            |  94
+--  Samantha  |   De Montaigne and The Art of The Essay   |  98
+--  Raj       |   MISSING                                 |  0
+--  Carlos    |   Borges and Magical Realism              |  89
+--  Lisa      |   MISSING                                 |  0
+
+-- #5: Print this
+-- first_name | average
+SELECT students.first_name, IFNULL(AVG(papers.grade), 0) AS average FROM students
+LEFT JOIN papers ON students.id = papers.student_id
+GROUP BY first_name ORDER BY average DESC;
+
+-- first_name   | average
+-- --------------------------
+--   Samantha   |  96.0000
+--   Carlos     |  89.0000
+--   Caleb      |  67.5000
+--   Raj        |  0.0000
+--   Lisa       |  0.0000
+
+
+-- #6: Print this
+    -- first_name  | average  | passing_status
+USE customers;
+
+-- IF(AVG(papers.grade >= 75) AS 'passing_status'
+SELECT students.first_name, IFNULL(AVG(papers.grade), 0) AS average, IF(AVG(papers.grade) > 75, 'PASSING', 'FAILING') AS 'passing_status' FROM students
+LEFT JOIN papers ON students.id = papers.student_id
+GROUP BY first_name ORDER BY average DESC;
+
+
+-- OR THIS
+SELECT first_name, IFNULL(AVG(grade), 0) AS average,
+    CASE
+        WHEN IFNULL(AVG(grade), 0) >= 75 THEN 'PASSING'
+        ELSE 'FAILING'
+    END AS passing_status
+FROM students
+    LEFT JOIN papers ON students.id = papers.student_id
+GROUP BY first_name
+ORDER BY average DESC;
+
+
+--   first_name   | average    | passing_status
+-- -------------------------------------------------
+-- Samantha       |  96.0000   |  PASSING
+-- Carlos         |  89.0000   |  PASSING
+-- Caleb          |  67.5000   |  FAILING
+-- Raj            |  0.0000    |  FAILING
+-- Lisa           |  0.0000    |  FAILING
+
+
+
+
+
+
+
+
+
+
+
+
+-- first_name | title                                     | grade
+--  Samantha  |   De Montaigne and The Art of The Essay   |  98
+--  Samantha  |   Russian Lit Through The Ages            |  94
+--  Carlos    |   Borges and Magical Realism              |  89
+--  Caleb     |   My Second Book Report                   |  75
+--  Caleb     |   My First Book Report                    |  60
 
