@@ -75,4 +75,141 @@ INSERT INTO reviews(series_id, reviewer_id, rating) VALUES
     (14,2,8.5),(14,3,8.9),(14,4,8.9);
 
 SELECT * FROM reviews;
+-- ---------------------------------------------------
+-- CHALLENGE #1
+   -- Display title | rating
+SELECT title, rating FROM series
+JOIN reviews ON series.id = reviews.series_id;
+-- ---------------------------------------------------
 
+-- CHALLENGE #2
+   -- Display title | avg_rating
+SELECT title, AVG(rating) AS avg_rating FROM series
+JOIN reviews on series.id = reviews.series_id
+GROUP BY title ORDER BY avg_rating;
+
+   -- Display title | avg_rating
+      -- Same thing but ROUNDING the AVG rating
+      -- Displaying in DESC order of rating
+SELECT title, ROUND(AVG(rating), 1) AS avg_rating FROM series
+JOIN reviews on series.id = reviews.series_id
+GROUP BY title ORDER BY avg_rating DESC;
+-- ---------------------------------------------------
+
+-- CHALLENGE #3
+   -- Display first_name | last_name | rating
+SELECT id, reviewers.first_name, reviewers.last_name FROM reviewers;
+SELECT * FROM reviews;
+
+SELECT * FROM reviewers
+JOIN reviews ON reviews.reviewer_id = reviewers.id;
+
+SELECT first_name, last_name, rating FROM reviewers
+JOIN reviews ON reviews.reviewer_id = reviewers.id;
+-- ---------------------------------------------------
+
+-- CHALLENGE #4a
+   -- Display unreviewed_series (find the ones without reviews)
+   -- As LEFT JOIN
+SELECT title AS unreviewed_series FROM series
+LEFT JOIN reviews ON series.id = reviews.series_id
+WHERE rating IS NULL;
+--   unreviewed_series
+-- --------------------------
+--   Malcolm In The Middle
+--   Pushing Daisies
+
+-- CHALLENGE #4b
+   -- Display unreviewed_series (find the ones without reviews)
+   -- As RIGHT JOIN
+SELECT title AS unreviewed_series FROM reviews
+RIGHT JOIN series ON series.id = reviews.series_id
+WHERE rating IS NULL;
+--   unreviewed_series
+-- --------------------------
+--   Malcolm In The Middle
+--   Pushing Daisies
+-- ---------------------------------------------------
+
+-- CHALLENGE #5
+   -- Display genre | avg_rating
+SELECT series.genre FROM series;
+SELECT AVG(reviews.rating) FROM reviews;
+
+SELECT series.genre, ROUND(AVG(reviews.rating), 2) AS avg_rating FROM series
+JOIN reviews ON series.id = reviews.series_id
+GROUP BY genre;
+--  genre      |  avg_rating
+--  ---------------------------
+--   Animation |   7.86
+--   Comedy    |   8.16
+--   Drama     |   8.04
+-- ---------------------------------------------------
+
+-- CHALLENGE #6
+   -- Display first_name | last_name | COUNT | MIN | MAX | AVG | STATUS
+SELECT reviewers.first_name, reviewers.last_name FROM reviewers;
+
+-- Step 1:Inner Join essential content
+SELECT * FROM reviewers
+JOIN reviews ON reviewers.id = reviews.reviewer_id;
+
+-- Step 2: Left Join, to grab everyone
+SELECT * FROM reviewers
+JOIN reviews ON reviewers.id = reviews.reviewer_id;
+
+-- Step 3: Left Join, to grab everyone
+SELECT first_name, last_name,
+       COUNT(rating) AS COUNT,
+       IFNULL(MIN(rating), 0) AS MIN,
+       IFNULL(MAX(rating), 0) AS MAX,
+       IFNULL(ROUND(AVG(rating), 2), 0) AS AVG,
+       IF(COUNT(rating) > 0, 'ACTIVE', 'INACTIVE') AS STATUS FROM reviewers
+LEFT JOIN reviews ON reviewers.id = reviews.reviewer_id
+GROUP BY first_name, last_name;
+
+--  first_name    |  last_name    | COUNT  | MIN   | MAX   | AVG    | STATUS
+-- -----------------------------------------------------------------------------------
+--    Thomas      |   Stoneman    |   5    |  7.0  |  9.5  |  8.02  |  ACTIVE
+--    Wyatt       |   Skaggs      |   9    |  5.5  |  9.3  |  7.80  |  ACTIVE
+--    Kimbra      |   Masters     |   9    |  6.8  |  9.0  |  7.99  |  ACTIVE
+--    Domingo     |   Cortes      |   10   |  5.8  |  9.1  |  7.83  |  ACTIVE
+--    Colt        |   Steele      |   10   |  4.5  |  9.9  |  8.77  |  ACTIVE
+--    Pinkie      |   Petit       |   4    |  4.3  |  8.8  |  7.25  |  ACTIVE
+--    Marlon      |   Crafford    |   0    |  0.0  |  0.0  |  0.00  |  INACTIVE
+
+-- Example of using CASE statements rather than IF when adding multiple options for STATUS
+SELECT first_name, last_name,
+       COUNT(rating) AS COUNT,
+       IFNULL(MIN(rating), 0) AS MIN,
+       IFNULL(MAX(rating), 0) AS MAX,
+       IFNULL(ROUND(AVG(rating), 2), 0) AS AVG,
+       CASE
+           WHEN COUNT(rating) >= 10 THEN 'POWER-USER'
+           WHEN COUNT(rating) > 0 THEN 'ACTIVE'
+           ELSE 'INACTIVE'
+      END AS STATUS
+FROM reviewers
+LEFT JOIN reviews ON reviewers.id = reviews.reviewer_id
+GROUP BY first_name, last_name;
+
+--  first_name    |  last_name    | COUNT  | MIN   | MAX   | AVG    | STATUS
+-- -----------------------------------------------------------------------------------
+--    Thomas      |   Stoneman    |   5    |  7.0  |  9.5  |  8.02  |  ACTIVE
+--    Wyatt       |   Skaggs      |   9    |  5.5  |  9.3  |  7.80  |  ACTIVE
+--    Kimbra      |   Masters     |   9    |  6.8  |  9.0  |  7.99  |  ACTIVE
+--    Domingo     |   Cortes      |   10   |  5.8  |  9.1  |  7.83  |  ACTIVE
+--    Colt        |   Steele      |   10   |  4.5  |  9.9  |  8.77  |  ACTIVE
+--    Pinkie      |   Petit       |   4    |  4.3  |  8.8  |  7.25  |  ACTIVE
+--    Marlon      |   Crafford    |   0    |  0.0  |  0.0  |  0.00  |  INACTIVE
+
+
+
+
+
+
+
+
+SELECT reviewers.first_name, reviewers.last_name, COUNT(reviews.rating) FROM reviewers
+JOIN reviews ON reviewers.id = reviews.reviewer_id
+GROUP BY ;
