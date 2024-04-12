@@ -1,4 +1,5 @@
 -- Section 14: Many to Many
+    -- TV Series Challenges
 -- ---------------------------
 -- Creating the database
 CREATE DATABASE tv_db;
@@ -76,13 +77,13 @@ INSERT INTO reviews(series_id, reviewer_id, rating) VALUES
 
 SELECT * FROM reviews;
 -- ---------------------------------------------------
--- CHALLENGE #1
+-- TV Series Challenge #1
    -- Display title | rating
 SELECT title, rating FROM series
 JOIN reviews ON series.id = reviews.series_id;
 -- ---------------------------------------------------
 
--- CHALLENGE #2
+-- TV Series Challenge #2
    -- Display title | avg_rating
 SELECT title, AVG(rating) AS avg_rating FROM series
 JOIN reviews on series.id = reviews.series_id
@@ -96,7 +97,7 @@ JOIN reviews on series.id = reviews.series_id
 GROUP BY title ORDER BY avg_rating DESC;
 -- ---------------------------------------------------
 
--- CHALLENGE #3
+-- TV Series Challenge #3
    -- Display first_name | last_name | rating
 SELECT id, reviewers.first_name, reviewers.last_name FROM reviewers;
 SELECT * FROM reviews;
@@ -108,7 +109,7 @@ SELECT first_name, last_name, rating FROM reviewers
 JOIN reviews ON reviews.reviewer_id = reviewers.id;
 -- ---------------------------------------------------
 
--- CHALLENGE #4a
+-- TV Series Challenge #4a
    -- Display unreviewed_series (find the ones without reviews)
    -- As LEFT JOIN
 SELECT title AS unreviewed_series FROM series
@@ -119,7 +120,7 @@ WHERE rating IS NULL;
 --   Malcolm In The Middle
 --   Pushing Daisies
 
--- CHALLENGE #4b
+-- TV Series Challenge #4b
    -- Display unreviewed_series (find the ones without reviews)
    -- As RIGHT JOIN
 SELECT title AS unreviewed_series FROM reviews
@@ -131,7 +132,7 @@ WHERE rating IS NULL;
 --   Pushing Daisies
 -- ---------------------------------------------------
 
--- CHALLENGE #5
+-- TV Series Challenge #5
    -- Display genre | avg_rating
 SELECT series.genre FROM series;
 SELECT AVG(reviews.rating) FROM reviews;
@@ -146,7 +147,7 @@ GROUP BY genre;
 --   Drama     |   8.04
 -- ---------------------------------------------------
 
--- CHALLENGE #6
+-- TV Series Challenge #6
    -- Display first_name | last_name | COUNT | MIN | MAX | AVG | STATUS
 SELECT reviewers.first_name, reviewers.last_name FROM reviewers;
 
@@ -202,14 +203,34 @@ GROUP BY first_name, last_name;
 --    Colt        |   Steele      |   10   |  4.5  |  9.9  |  8.77  |  ACTIVE
 --    Pinkie      |   Petit       |   4    |  4.3  |  8.8  |  7.25  |  ACTIVE
 --    Marlon      |   Crafford    |   0    |  0.0  |  0.0  |  0.00  |  INACTIVE
+-- -----------------------------------------------------------------------------------
 
 
+-- TV Series Challenge #7
+   --  title | rating | reviewer
+
+-- Way #1
+SELECT series.title, reviews.rating, CONCAT(reviewers.first_name, SPACE(1), reviewers.last_name) AS reviewer FROM series
+JOIN reviews ON reviews.series_id = series.id
+JOIN reviewers ON reviews.reviewer_id = reviewers.id;
+
+-- Step 1
+SELECT series.title, rating FROM reviews
+JOIN series ON reviews.series_id = series.id;
+
+-- Step 2
+SELECT * FROM reviews
+JOIN series ON reviews.series_id = series.id
+JOIN reviewers ON  reviews.reviewer_id = reviewers.id;
+
+-- Step 3
+   -- Way #2
+SELECT title, rating, CONCAT(first_name, SPACE(1), last_name) AS reviewer FROM reviews
+JOIN series ON reviews.series_id = series.id
+JOIN reviewers ON reviews.reviewer_id = reviewers.id;
 
 
-
-
-
-
-SELECT reviewers.first_name, reviewers.last_name, COUNT(reviews.rating) FROM reviewers
-JOIN reviews ON reviewers.id = reviews.reviewer_id
-GROUP BY ;
+-- Way #3
+SELECT title, rating, CONCAT(first_name, SPACE(1), last_name) AS reviewer FROM reviewers
+JOIN reviews ON reviews.reviewer_id = reviewers.id
+JOIN series ON  reviews.series_id = series.id;
