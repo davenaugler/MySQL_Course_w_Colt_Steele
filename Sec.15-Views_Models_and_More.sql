@@ -143,7 +143,7 @@ SELECT @@SESSION.sql_mode;
 
 SELECT 3/0;
 SHOW WARNINGS;
-
+-- ----------------------------------------------
 
 -- STRICT_TRANS_TABLES
 -- ----------------------------------------------
@@ -161,12 +161,30 @@ SELECT * FROM reviews;
 
 -- Example if STRICT_TRANS_TABLES was turned off
 -- If STRICT_TRANS_TABLES was turned off then you'd be able to insert
---  a string into a int or decimal. And there would be a 0 or 0.0 in the strings place
-
-
-
-
-
+--   a string into a int or decimal. And there would be a 0 or 0.0 in the strings place.
+-- It's very import to keep this mode on.
+-- ----------------------------------------------
 
 -- More Modes
 -- ----------------------------------------------
+-- ONLY_FULL_GROUP_BY
+      -- Reject queries for which the select list, HAVING condition, or ORDER BY list refer to nonaggregated
+      --   columns that are neither named in the GROUP BY clause nor are functionally dependant on
+      --   (uniquely determined by) GROUP BY columns.
+SELECT @@GLOBAL.sql_mode;
+SELECT @@SESSION.sql_mode;
+
+SELECT title, rating FROM series
+JOIN reviews ON reviews.series_id = series.id;
+
+SELECT title, AVG(rating) AS avg_rating FROM series
+JOIN reviews ON reviews.series_id = series.id
+GROUP BY title;
+
+-- Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated
+-- column 'tv_db.reviews.rating' which is not functionally dependent on columns in
+-- GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+
+SELECT title, rating FROM series
+JOIN reviews ON reviews.series_id = series.id
+GROUP BY title;
