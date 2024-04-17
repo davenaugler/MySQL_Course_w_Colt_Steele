@@ -234,3 +234,12 @@ JOIN reviewers ON reviews.reviewer_id = reviewers.id;
 SELECT title, rating, CONCAT(first_name, SPACE(1), last_name) AS reviewer FROM reviewers
 JOIN reviews ON reviews.reviewer_id = reviewers.id
 JOIN series ON  reviews.series_id = series.id;
+
+
+SELECT * FROM reviews
+JOIN series ON series.id = reviews.series_id
+JOIN reviewers ON reviewers.id = reviews.reviewer_id;
+
+SELECT  FROM reviews
+JOIN series ON series.id = reviews.series_id
+JOIN reviewers ON reviewers.id = reviews.reviewer_id;

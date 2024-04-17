@@ -70,59 +70,98 @@ SELECT * FROM series;
 -- ----------------------------------------------
 SELECT * FROM ordered_series;
 
--- save to laptop
+-- Error: Table 'ordered_series' already exists
+   -- This view is not a real table but it's being treated as a
+   --   as a table in this situation
+CREATE VIEW ordered_series AS
+SELECT * FROM series ORDER BY released_year DESC;
 
+-- This will because we'll either CREATE or REPLACE the view
+CREATE OR REPLACE VIEW ordered_series AS
+SELECT * FROM series ORDER BY released_year DESC;
 
+SELECT * FROM ordered_series;
 
+ALTER VIEW ordered_series AS
+SELECT * FROM series ORDER BY released_year;
 
+SELECT * FROM ordered_series;
 
+DROP VIEW ordered_series;
 
-
-
--- HAVING clause
+SELECT * FROM series;
 -- ----------------------------------------------
 
+-- HAVING clause
+    -- Group by HAVINB
+-- ----------------------------------------------
+SELECT * FROM full_reviews;
 
+SELECT full_reviews.title, AVG(rating), COUNT(rating) AS review_count FROM full_reviews GROUP BY title;
 
+SELECT full_reviews.title, AVG(rating) FROM full_reviews GROUP BY title HAVING COUNT(rating) > 1;
 
-
-
-
-
-
+SELECT full_reviews.title, AVG(rating), COUNT(rating) AS review_count FROM full_reviews GROUP BY title HAVING COUNT(rating) > 1;
+-- ----------------------------------------------
 
 
 -- WITH ROLLUP
 -- ----------------------------------------------
+SELECT * FROM full_reviews;
 
+SELECT AVG(rating) AS avg_rating FROM full_reviews;
 
+SELECT title, AVG(rating) AS avg_rating FROM full_reviews GROUP BY title;
 
+SELECT title, AVG(rating) AS avg_rating FROM full_reviews GROUP BY title WITH ROLLUP;
 
+SELECT title, COUNT(rating) AS rating_count FROM full_reviews GROUP BY title WITH ROLLUP;
 
+SELECT full_reviews.released_year, AVG(rating) AS avg_rating FROM full_reviews GROUP BY released_year;
 
+SELECT full_reviews.released_year, AVG(rating) AS avg_rating FROM full_reviews GROUP BY released_year WITH ROLLUP;
 
+SELECT full_reviews.released_year, genre, AVG(rating) AS avg_rating FROM full_reviews GROUP BY released_year, genre;
 
-
-
-
+SELECT full_reviews.released_year, genre, AVG(rating) AS avg_rating FROM full_reviews GROUP BY released_year, genre WITH ROLLUP;
+-- ----------------------------------------------
 
 -- SQL Modes Basics
 -- ----------------------------------------------
+SELECT @@GLOBAL.sql_mode;
+SELECT @@SESSION.sql_mode;
+
+SELECT 3/0;
+SHOW WARNINGS;
+-- ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,
+-- ERROR_FOR_DIVISION_BY_ZERO
+-- NO_ENGINE_SUBSTITUTION |
 
 
+SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION';
+SELECT @@SESSION.sql_mode;
 
-
-
-
-
+SELECT 3/0;
+SHOW WARNINGS;
 
 
 -- STRICT_TRANS_TABLES
 -- ----------------------------------------------
+SELECT @@GLOBAL.sql_mode;
+SELECT @@SESSON.sql_mode;
 
+DESC reviews;
 
+-- Error: Incorrect decimal value: 'hi' for column 'rating' at row 1
+INSERT INTO reviews(rating) VALUE ('hi');
 
+SELECT * FROM reviews;
 
+-- 'hi' was not inserted
+
+-- Example if STRICT_TRANS_TABLES was turned off
+-- If STRICT_TRANS_TABLES was turned off then you'd be able to insert
+--  a string into a int or decimal. And there would be a 0 or 0.0 in the strings place
 
 
 
