@@ -154,15 +154,12 @@ SELECT * FROM photo_tags;
 
 -- Trying to do what we did above
 -- COME BACK AND THINK ON THIS
--- Display: photo_id | Who's photo | tag_id | tag_name
-SELECT tags.id,
-
-SELECT follows.follower_id, follower.username AS follower_username,
-    follows.followee_id, followee.username AS followee_username FROM follows
-JOIN users AS follower ON follows.follower_id = follower.id
-JOIN users AS followee ON follows.followee_id = followee.id;
-
-
+-- Display: photo_id | photo_username | tag_id | tag_name
+SELECT photo_tags.photo_id, users.username AS photo_username, photo_tags.tag_id, tags.tag_name
+FROM photo_tags
+JOIN photos ON photo_tags.photo_id = photos.id
+JOIN users ON photos.user_id = users.id
+JOIN tags ON photo_tags.tag_id = tags.id;
 
 
 
