@@ -153,6 +153,8 @@ VALUES (1,1),
 SELECT * FROM photo_tags;
 
 -- Trying to do what we did above
+-- COME BACK AND THINK ON THIS
+-- Display: photo_id | Who's photo | tag_id | tag_name
 SELECT tags.id,
 
 SELECT follows.follower_id, follower.username AS follower_username,
